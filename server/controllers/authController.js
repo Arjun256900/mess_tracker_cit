@@ -15,13 +15,14 @@ export const register = async (req, res) => {
     if (user) return res.status(400).json({ msg: "User already exists" });
 
     //Salting password
-    const salt = await bcrypt.genSalt(15);
+    const salt = await bcrypt.genSalt(8);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      name,
-      email,
+      username: name,
+      email: email,
       password: hashedPassword,
+      isAdmin: false,
     });
 
     await newUser.save();
@@ -41,6 +42,7 @@ export const register = async (req, res) => {
         res.json({ token });
       }
     );
+    console.log("User registered : ", name);
   } catch (err) {
     console.error("Error authController.js : " + err.message);
     res.status(500).send("Server Error");
@@ -56,10 +58,10 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) return res.status(400).json({ msg: "User not found" });
+
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
-
+    const existingUser = await User.findOne({email});
     const payload = {
       user: {
         id: user.id,
@@ -75,7 +77,7 @@ export const login = async (req, res) => {
         res.json({ token });
       }
     );
-
+    console.log("Logged in as : " + existingUser.username);
   } catch (err) {
     console.error("Error authController.js : " + err.message);
     res.status(500).send("Server Error");
