@@ -27,7 +27,7 @@ function FormContainer({ type }) {
           password,
         });
         console.log("User registered : ", res.data);
-        navigate("/dashboard");
+        navigate("/home");
         // Add token to local storage
         localStorage.setItem("token", res.data.token);
       } catch (e) {
@@ -40,7 +40,7 @@ function FormContainer({ type }) {
           password,
         });
         console.log("User logged in : ", res.data);
-        navigate("/dashboard");
+        navigate("/home");
         // Add token to local storage
         localStorage.setItem("token", res.data.token);
       } catch (e) {
@@ -52,12 +52,6 @@ function FormContainer({ type }) {
     <div className={`form-container ${type}`}>
       <form onSubmit={handleSubmit} method="POST">
         <h1>{type === "sign-up" ? "Create Account" : "Sign In"}</h1>
-        <SocialIcons />
-        <span>
-          {type === "sign-up"
-            ? "or use your email for registration"
-            : "or use your email and password"}
-        </span>
         {type === "sign-up" && (
           <input
             type="text"
